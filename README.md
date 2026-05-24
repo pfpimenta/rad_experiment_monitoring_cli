@@ -9,8 +9,11 @@ The monitoring dashboard provides:
 ### Usage
 
 ```bash
-python3 monitor.py --logs-folder LOGS_FOLDERPATH
+python3 monitor.py --logs-folder LOGS_FOLDERPATH [--cooldown SECONDS]
 ```
+
+*   `--logs-folder`: Path to the root logs directory.
+*   `--cooldown`: (Optional) Cool down period between processing log updates in seconds. Defaults to `1.0`.
 
 Example (run this to test the repo):
 
@@ -26,8 +29,8 @@ logs/
 │   ├── 2025_12_20_08_59_08_run_mobilenet_v2_coral_ECC_OFF_rasp4-coral.log
 │   ├── 2025_12_20_13_52_00_run_base_vit_8_ECC_OFF_rasp4-coral.log
 │   └── ...
-├── device2
+├── other_device
 │   └── ...
-└── device3
+└── ...
     └── ...
 ```

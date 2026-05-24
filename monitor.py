@@ -2,6 +2,7 @@ import argparse
 import os
 import time
 import re
+import queue
 from pathlib import Path
 from threading import Lock
 from rich.console import Console
@@ -13,17 +14,17 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 class LogChangeHandler(FileSystemEventHandler):
-    """Listens for file updates and recalculates SDC deltas on the fly."""
+    """Listens for file updates and queues them for the monitor."""
     def __init__(self, monitor):
         self.monitor = monitor
 
     def on_modified(self, event):
         if not event.is_directory and event.src_path.endswith('.log'):
-            self.monitor.handle_log_update(Path(event.src_path))
+            self.monitor.queue_update(Path(event.src_path))
 
     def on_created(self, event):
         if not event.is_directory and event.src_path.endswith('.log'):
-            self.monitor.handle_log_update(Path(event.src_path))
+            self.monitor.queue_update(Path(event.src_path))
 
 
 class RadiationMonitor:
@@ -35,6 +36,23 @@ class RadiationMonitor:
         self.file_to_model = {} # Tracks {file_path_str: model_name}
         self.file_sizes = {}   # Tracks file size to only read *new* lines
         self.latest_lines = [] # Stores the last few lines of the active log
+        self.update_queue = queue.Queue()
+        self.pending_files = set()
+
+    def queue_update(self, file_path):
+        """Adds a file to the pending updates set."""
+        with self.lock:
+            self.pending_files.add(file_path)
+
+    def process_updates(self):
+        """Processes all files that have changed since the last cool-down period."""
+        to_process = []
+        with self.lock:
+            to_process = list(self.pending_files)
+            self.pending_files.clear()
+        
+        for file_path in to_process:
+            self.handle_log_update(file_path)
 
     def _extract_model(self, content):
         """Extracts the model filename from the #HEADER line."""
@@ -219,6 +237,7 @@ class RadiationMonitor:
 def main():
     parser = argparse.ArgumentParser(description="Monitor radiation experiment logs for SDCs.")
     parser.add_argument("--logs-folder", required=True, help="Path to the root logs directory.")
+    parser.add_argument("--cooldown", type=float, default=1.0, help="Cool down period between scans in seconds (default: 1.0).")
     args = parser.parse_args()
 
     logs_path = Path(args.logs_folder)
@@ -244,9 +263,11 @@ def main():
     with Live(monitor.generate_layout(), screen=True, auto_refresh=True, refresh_per_second=4) as live:
         try:
             while True:
+                # Process queued updates every cooldown interval
+                monitor.process_updates()
                 # We update the layout instance directly, watchdog manages data states
                 live.update(monitor.generate_layout())
-                time.sleep(0.25)
+                time.sleep(args.cooldown)
         except KeyboardInterrupt:
             pass
         finally:
