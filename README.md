@@ -34,3 +34,7 @@ logs/
 └── ...
     └── ...
 ```
+
+### TODOs
+* Automated Testing: Add a tests/ directory with unit tests for the regex extraction and integration tests using pytest to simulate log file updates.
+* Installation: Add a setup.py or pyproject.toml to allow installing the tool via pip install ., making the monitor.py command available globally as a CLI entry point.
