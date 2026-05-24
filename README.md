@@ -1,5 +1,10 @@
 # rad_experiment_monitoring_cli
-Terminal tool to monitor radiation experiments (throwing radiation at computing devices and collecting SDCs (Single Data Corruption = wrong output values)
+Terminal tool to monitor radiation experiments (throwing radiation at computing devices and collecting SDCs (Single Data Corruption = wrong output values).
+
+The monitoring dashboard provides:
+1. **Device Overview**: Summary of logs and total SDCs per device folder.
+2. **Model-wise Breakdown**: Detailed breakdown of logs and SDCs per model (extracted from log headers).
+3. **Live Tail**: Real-time view of the most recent log activity with highlighted SDC events.
 
 ### Usage
 
