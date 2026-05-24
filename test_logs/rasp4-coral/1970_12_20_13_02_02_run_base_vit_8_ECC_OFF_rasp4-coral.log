@@ -1,0 +1,73 @@
+#SERVER_HEADER --model vit_base_8_edgetpu.tflite -n 32 --vit
+#SERVER_BEGIN Y:1970 M:12 D:20 TIME:13:2:2-367636
+#LOGFILE /var/radiation-benchmarks/log/2024_05_22_13_10_19_TensorFlow-vit_base_8_edgetpu_ECC_OFF_rasp4-coral.log
+#HEADER framework:TensorFlow framework_version:2.10.0 Device:EdgeTPUiterations=1000000000000 testsamples=100 generate=False enableconsolelog=False model=/home/carol/tpu-rad/models/vit_base_8_edgetpu.tflite tokens=None input=/home/carol/tpu-rad/inputs/vit_base_8_images.npy golden=/home/carol/tpu-rad/golden/vit_base_8_golden.npy reload=False vit=True log_interval=50
+#BEGIN Y:2024 M:05 D:22 Time:13:10:19
+#INF PERF loaded_object:model load_time:4.6859s
+#INF PERF loaded_object:data load_time:0.4120s
+#INF WARNING n_images:100 golden_outputs:32
+#IT 0 KerTime:0.1209531 AccTime:0.1209531
+#IT 50 KerTime:0.0972844 AccTime:4.9606700
+#IT 100 KerTime:0.0966568 AccTime:9.8758110
+#IT 150 KerTime:0.0968822 AccTime:14.8091795
+#IT 200 KerTime:0.0978184 AccTime:19.7200054
+#IT 250 KerTime:0.0968242 AccTime:24.6081724
+#IT 300 KerTime:0.0982488 AccTime:29.4713284
+#IT 350 KerTime:0.0983193 AccTime:34.4042839
+#IT 400 KerTime:0.0967182 AccTime:39.3503853
+#IT 450 KerTime:0.1005921 AccTime:44.2543981
+#IT 500 KerTime:0.0967150 AccTime:49.1207404
+#IT 550 KerTime:0.0966846 AccTime:54.0152485
+#IT 600 KerTime:0.0998438 AccTime:58.9468425
+#IT 650 KerTime:0.0991926 AccTime:63.8918571
+#IT 700 KerTime:0.0978942 AccTime:68.7895972
+#IT 750 KerTime:0.0967725 AccTime:73.6825704
+#IT 800 KerTime:0.0992179 AccTime:78.5907029
+#IT 850 KerTime:0.0991946 AccTime:83.5082860
+#IT 900 KerTime:0.0966376 AccTime:88.4472007
+#IT 950 KerTime:0.0975214 AccTime:93.3546923
+#IT 1000 KerTime:0.0965697 AccTime:98.2347955
+#IT 1050 KerTime:0.0987139 AccTime:103.1637004
+#IT 1100 KerTime:0.0965155 AccTime:108.0790203
+#ERR SDC image_index:21
+#ERR output_t has_nan:0 has_inf:0 min_val:0.0 max_val:0.94140625
+#ERR diff_t has_nan:0 has_inf:0 min_val:-0.015625 max_val:0.015625
+#ERR index:23 e:0.95703125 r:0.94140625
+#ERR index:67 e:0.0078125 r:0.0234375
+#INF PERF destroyed_object:model destroy_time:0.0159s
+#INF PERF destroyed_object:data destroy_time:0.0001s
+#INF PERF loaded_object:model load_time:3.1599s
+#INF PERF loaded_object:data load_time:0.0195s
+#IT 1150 KerTime:0.0958661 AccTime:112.9659456
+#IT 1200 KerTime:0.0993607 AccTime:117.8506827
+#IT 1250 KerTime:0.0980271 AccTime:122.7414336
+#IT 1300 KerTime:0.0990974 AccTime:127.6819081
+#IT 1350 KerTime:0.0966633 AccTime:132.6070800
+#IT 1400 KerTime:0.0966004 AccTime:137.4912141
+#IT 1450 KerTime:0.1005225 AccTime:142.3829348
+#IT 1500 KerTime:0.0966322 AccTime:147.2897271
+#IT 1550 KerTime:0.0969234 AccTime:152.2263732
+#IT 1600 KerTime:0.0991199 AccTime:157.1592924
+#IT 1650 KerTime:0.0966621 AccTime:162.0272451
+#IT 1700 KerTime:0.1007254 AccTime:166.9143955
+#IT 1750 KerTime:0.0967043 AccTime:171.8398523
+#IT 1800 KerTime:0.0969250 AccTime:176.7817963
+#IT 1850 KerTime:0.0967971 AccTime:181.6799473
+#IT 1900 KerTime:0.0988709 AccTime:186.5531768
+#IT 1950 KerTime:0.0966336 AccTime:191.4634927
+#IT 2000 KerTime:0.0989178 AccTime:196.3695592
+#IT 2050 KerTime:0.0990762 AccTime:201.3116465
+#IT 2100 KerTime:0.0960029 AccTime:206.1986540
+#IT 2150 KerTime:0.0972919 AccTime:211.0695263
+#IT 2200 KerTime:0.1001902 AccTime:216.0057028
+#IT 2250 KerTime:0.0966540 AccTime:220.9068342
+#IT 2300 KerTime:0.0967297 AccTime:225.8090551
+#IT 2350 KerTime:0.0974280 AccTime:230.6985470
+#IT 2400 KerTime:0.0997602 AccTime:235.5965357
+#IT 2450 KerTime:0.1006490 AccTime:240.5425265
+#IT 2500 KerTime:0.0958919 AccTime:245.4640109
+#IT 2550 KerTime:0.0967819 AccTime:250.3438234
+#IT 2600 KerTime:0.0967844 AccTime:255.2229792
+#IT 2650 KerTime:0.0979841 AccTime:260.1276516
+#IT 2700 KerTime:0.0988187 AccTime:265.0542890
+#IT 2750 KerTime:0.0988882 AccTime:269.9852935

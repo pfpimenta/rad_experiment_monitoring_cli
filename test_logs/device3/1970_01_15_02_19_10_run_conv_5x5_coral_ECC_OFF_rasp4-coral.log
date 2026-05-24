@@ -1,0 +1,91 @@
+#SERVER_HEADER --model conv_2d_1_1024_1024_1_5_5_1_1_quant_edgetpu.tflite
+#SERVER_BEGIN Y:1970 M:1 D:15 TIME:2:19:10-172677
+#LOGFILE /var/radiation-benchmarks/log/1971_05_22_13_19_44_TensorFlow-conv_2d_1_1024_1024_1_5_5_1_1_quant_edgetpu_ECC_OFF_rasp4-coral.log
+#HEADER framework:TensorFlow framework_version:2.10.0 Device:EdgeTPUiterations=1000000000000 testsamples=1 generate=False enableconsolelog=False model=/home/carol/tpu-rad/models/conv_2d_1_1024_1024_1_5_5_1_1_quant_edgetpu.tflite tokens=None input=/home/carol/tpu-rad/inputs/input_conv_128_1_1024_1024_3_random_values.npy golden=/home/carol/tpu-rad/golden/golden_simple_conv_2d_1_1024_1024_1_5_5_1_1.npy reload=False vit=True log_interval=1
+#BEGIN Y:1971 M:05 D:22 Time:13:19:44
+#INF PERF loaded_object:model load_time:3.1515s
+#INF PERF loaded_object:data load_time:0.4328s
+#IT 0 KerTime:0.4208079 AccTime:0.4208079
+#IT 1 KerTime:0.4075769 AccTime:0.8283848
+#IT 2 KerTime:0.4018502 AccTime:1.2302351
+#IT 3 KerTime:0.4466521 AccTime:1.6768872
+#IT 4 KerTime:0.4066742 AccTime:2.0835614
+#IT 5 KerTime:0.4059843 AccTime:2.4895457
+#IT 6 KerTime:0.4111311 AccTime:2.9006769
+#IT 7 KerTime:0.4048581 AccTime:3.3055350
+#IT 8 KerTime:0.4132758 AccTime:3.7188108
+#ERR SDC image_index:0
+#ERR output_t has_nan:0 has_inf:0 min_val:40.0 max_val:196.0
+#ERR diff_t has_nan:0 has_inf:0 min_val:0.0 max_val:255.0
+#ERR index:337014 e:108 r:109
+#INF PERF destroyed_object:model destroy_time:0.0099s
+#INF PERF destroyed_object:data destroy_time:0.0000s
+#INF PERF loaded_object:model load_time:3.1273s
+#INF PERF loaded_object:data load_time:0.4013s
+#IT 9 KerTime:0.3086370 AccTime:4.0274478
+#ERR SDC image_index:0
+#ERR output_t has_nan:0 has_inf:0 min_val:40.0 max_val:196.0
+#ERR diff_t has_nan:0 has_inf:0 min_val:0.0 max_val:16.0
+#ERR index:184261 e:113 r:97
+#INF PERF destroyed_object:model destroy_time:0.0096s
+#INF PERF destroyed_object:data destroy_time:0.0000s
+#INF PERF loaded_object:model load_time:3.1137s
+#INF PERF loaded_object:data load_time:0.3767s
+#IT 10 KerTime:0.4318276 AccTime:4.4592755
+#IT 11 KerTime:0.3863354 AccTime:4.8456109
+#IT 12 KerTime:0.4006305 AccTime:5.2462414
+#IT 13 KerTime:0.3931235 AccTime:5.6393649
+#IT 14 KerTime:0.4112292 AccTime:6.0505941
+#IT 15 KerTime:0.4146184 AccTime:6.4652125
+#IT 16 KerTime:0.4147561 AccTime:6.8799686
+#IT 17 KerTime:0.4148804 AccTime:7.2948489
+#IT 18 KerTime:0.4136038 AccTime:7.7084527
+#IT 19 KerTime:0.4144619 AccTime:8.1229146
+#IT 20 KerTime:0.4146009 AccTime:8.5375155
+#IT 21 KerTime:0.4158558 AccTime:8.9533713
+#IT 22 KerTime:0.4169063 AccTime:9.3702776
+#IT 23 KerTime:0.4122583 AccTime:9.7825358
+#IT 24 KerTime:0.4089251 AccTime:10.1914609
+#IT 25 KerTime:0.4092719 AccTime:10.6007328
+#IT 26 KerTime:0.4108698 AccTime:11.0116026
+#IT 27 KerTime:0.4108705 AccTime:11.4224730
+#IT 28 KerTime:0.4121040 AccTime:11.8345771
+#ERR SDC image_index:0
+#ERR output_t has_nan:0 has_inf:0 min_val:40.0 max_val:196.0
+#ERR diff_t has_nan:0 has_inf:0 min_val:0.0 max_val:248.0
+#ERR index:233116 e:119 r:127
+#INF PERF destroyed_object:model destroy_time:0.0100s
+#INF PERF destroyed_object:data destroy_time:0.0000s
+#INF PERF loaded_object:model load_time:3.1154s
+#INF PERF loaded_object:data load_time:0.3783s
+#IT 29 KerTime:0.4121969 AccTime:12.2467739
+#IT 30 KerTime:0.4119576 AccTime:12.6587315
+#IT 31 KerTime:0.4101263 AccTime:13.0688578
+#IT 32 KerTime:0.4113619 AccTime:13.4802197
+#IT 33 KerTime:0.4124269 AccTime:13.8926466
+#IT 34 KerTime:0.4108745 AccTime:14.3035211
+#IT 35 KerTime:0.4106759 AccTime:14.7141970
+#IT 36 KerTime:0.4100978 AccTime:15.1242948
+#IT 37 KerTime:0.4117131 AccTime:15.5360079
+#IT 38 KerTime:0.4105039 AccTime:15.9465118
+#IT 39 KerTime:0.4111523 AccTime:16.3576641
+#IT 40 KerTime:0.4110222 AccTime:16.7686863
+#IT 41 KerTime:0.4106432 AccTime:17.1793295
+#IT 42 KerTime:0.4120741 AccTime:17.5914036
+#IT 43 KerTime:0.4112090 AccTime:18.0026126
+#IT 44 KerTime:0.4109952 AccTime:18.4136078
+#IT 45 KerTime:0.4123726 AccTime:18.8259804
+#IT 46 KerTime:0.4104439 AccTime:19.2364242
+#IT 47 KerTime:0.4120236 AccTime:19.6484478
+#IT 48 KerTime:0.4089898 AccTime:20.0574376
+#IT 49 KerTime:0.4118847 AccTime:20.4693223
+#IT 50 KerTime:0.4105736 AccTime:20.8798960
+#IT 51 KerTime:0.4120727 AccTime:21.2919687
+#IT 52 KerTime:0.4104421 AccTime:21.7024108
+#IT 53 KerTime:0.4106343 AccTime:22.1130451
+#IT 54 KerTime:0.4100903 AccTime:22.5231354
+#IT 55 KerTime:0.4092976 AccTime:22.9324331
+#IT 56 KerTime:0.4089482 AccTime:23.3413813
+#IT 57 KerTime:0.4105556 AccTime:23.7519370
+#IT 58 KerTime:0.4107810 AccTime:24.1627180
+#SERVER_DUE:soft APP reboot TIME:1970-01-15-02-20-24
