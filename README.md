@@ -3,10 +3,19 @@ Terminal tool to monitor radiation experiments (throwing radiation at computing 
 
 ### Usage
 
+```bash
 python3 monitor.py --logs-folder LOGS_FOLDERPATH
+```
+
+Example (run this to test the repo):
+
+```bash
+python3 monitor.py --logs-folder test_logs/
+```
 
 ### Expected log sctructure
 
+```text
 logs/
 ├── rasp4-coral
 │   ├── 2025_12_20_08_59_08_run_mobilenet_v2_coral_ECC_OFF_rasp4-coral.log
@@ -16,3 +25,4 @@ logs/
 │   └── ...
 └── device3
     └── ...
+```
