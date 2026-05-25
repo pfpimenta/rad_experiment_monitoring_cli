@@ -63,7 +63,7 @@ class Dashboard:
             if last_sdc_ts and global_latest_ts:
                 elapsed_sdc = global_latest_ts - last_sdc_ts
                 if elapsed_sdc < 0: elapsed_sdc = 0
-                last_sdc_str = Dashboard._format_elapsed_time(elapsed_sdc, reverse=True)
+                last_sdc_str = Dashboard._format_elapsed_time(elapsed_sdc)
             else:
                 last_sdc_str = "[dim]Never[/dim]"
 
@@ -81,26 +81,22 @@ class Dashboard:
         return table
 
     @staticmethod
-    def _format_elapsed_time(elapsed: float, reverse: bool = False) -> str:
+    def _format_elapsed_time(elapsed: float) -> str:
         if elapsed < 0:
             elapsed = 0
         
         if elapsed < 10:
-            color = "bold red" if reverse else "bold green"
-            msg = f"Just now ({int(elapsed)}s)"
-            return f"[{color}]{msg}[/{color}]"
+            return f"[bold green]Just now ({int(elapsed)}s)[/bold green]"
         elif elapsed < 60:
-            color = "red" if reverse else "green"
-            return f"[{color}]{int(elapsed)}s ago[/{color}]"
+            return f"[green]{int(elapsed)}s ago[/green]"
         elif elapsed < 3600:
             minutes = int(elapsed // 60)
             seconds = int(elapsed % 60)
             return f"[yellow]{minutes}m {seconds}s ago[/yellow]"
         else:
-            color = "green" if reverse else "bold red"
             hours = int(elapsed // 3600)
             minutes = int((elapsed % 3600) // 60)
-            return f"[{color}]{hours}h {minutes}m ago[/{color}]"
+            return f"[bold red]{hours}h {minutes}m ago[/bold red]"
 
     @staticmethod
     def _create_model_table(model_data, global_latest_ts=None):
@@ -224,7 +220,7 @@ class Dashboard:
             # Use global_latest_ts as the reference "now"
             elapsed_sdc = global_latest_ts - last_sdc_ts
             if elapsed_sdc < 0: elapsed_sdc = 0
-            last_sdc_str = Dashboard._format_elapsed_time(elapsed_sdc, reverse=True)
+            last_sdc_str = Dashboard._format_elapsed_time(elapsed_sdc)
         else:
             last_sdc_str = "[dim]Never[/dim]"
 
