@@ -45,6 +45,7 @@ class Dashboard:
         table.add_column("Device Name", style="bold white")
         table.add_column("Log Files", justify="right")
         table.add_column("SDCs", justify="right")
+        table.add_column("Last SDC", justify="right")
         table.add_column("Last Update", justify="right")
 
         total_logs = 0
@@ -58,6 +59,22 @@ class Dashboard:
             total_sdcs += sdc_count
             sdc_style = "bold red" if sdc_count > 0 else "green"
             
+            last_sdc_ts = info.get("last_sdc_timestamp")
+            if last_sdc_ts:
+                # For Device Overview, we use system time for "Last SDC" if it's recent, 
+                # but Device Overview is generally about the monitor's state.
+                # However, to be consistent with 1970 logs if that's what we are monitoring:
+                # If last_sdc_ts is in 1970, we can't use current_time.
+                # Let's use the same logic as Last Update if it's recent, 
+                # or N/A if it's old.
+                if current_time - last_sdc_ts < 86400 * 365: # Within a year
+                    elapsed_sdc = current_time - last_sdc_ts
+                    last_sdc_str = Dashboard._format_elapsed_time(elapsed_sdc)
+                else:
+                    last_sdc_str = "[dim]Long ago[/dim]"
+            else:
+                last_sdc_str = "[dim]Never[/dim]"
+
             last_update = info.get("last_update_time")
             if last_update is None:
                 status_str = "[dim]Never[/dim]"
@@ -65,10 +82,10 @@ class Dashboard:
                 elapsed = current_time - last_update
                 status_str = Dashboard._format_elapsed_time(elapsed)
 
-            table.add_row(device, str(num_logs), f"[{sdc_style}]{sdc_count}[/{sdc_style}]", status_str)
+            table.add_row(device, str(num_logs), f"[{sdc_style}]{sdc_count}[/{sdc_style}]", last_sdc_str, status_str)
 
         table.add_section() 
-        table.add_row("TOTAL", str(total_logs), f"[bold magenta]{total_sdcs}[/bold magenta]", "")
+        table.add_row("TOTAL", str(total_logs), f"[bold magenta]{total_sdcs}[/bold magenta]", "", "")
         return table
 
     @staticmethod
@@ -98,6 +115,7 @@ class Dashboard:
         table.add_column("First Timestamp", justify="right")
         table.add_column("Last Timestamp", justify="right")
         table.add_column("Time Span", justify="right")
+        table.add_column("Last SDC", justify="right")
         table.add_column("SDC Rate", justify="right")
         table.add_column("Last Update", justify="right")
 
@@ -115,7 +133,7 @@ class Dashboard:
                 elapsed = current_time - last_update
                 status_str = Dashboard._format_elapsed_time(elapsed)
 
-            duration_str, rate_str, first_ts, last_ts = Dashboard._calculate_model_metrics(info)
+            duration_str, rate_str, first_ts, last_ts, last_sdc_str = Dashboard._calculate_model_metrics(info)
 
             table.add_row(
                 model, 
@@ -124,6 +142,7 @@ class Dashboard:
                 first_ts,
                 last_ts,
                 duration_str,
+                last_sdc_str,
                 rate_str,
                 status_str
             )
@@ -157,10 +176,11 @@ class Dashboard:
             rate_str: formatted SDC rate (e.g. '1.50/hr' or '0.05/min' or '0.00/hr')
             first_ts_str: formatted first timestamp
             last_ts_str: formatted last timestamp
+            last_sdc_str: formatted time since last SDC
         """
         log_paths = info.get("log_paths", set())
         if not log_paths:
-            return "0s", "0.00/hr", "N/A", "N/A"
+            return "0s", "0.00/hr", "N/A", "N/A", "[dim]Never[/dim]"
 
         # Find earliest start time and latest end time (mtime)
         earliest_start = None
@@ -180,7 +200,7 @@ class Dashboard:
                     latest_end = end_t
 
         if earliest_start is None or latest_end is None:
-            return "N/A", "N/A", "N/A", "N/A"
+            return "N/A", "N/A", "N/A", "N/A", "[dim]Never[/dim]"
 
         # Format timestamps
         first_ts_str = datetime.datetime.fromtimestamp(earliest_start).strftime("%Y-%m-%d %H:%M:%S")
@@ -202,6 +222,22 @@ class Dashboard:
             minutes = int((duration % 3600) // 60)
             duration_str = f"{hours}h {minutes}m"
 
+        # Calculate Last SDC
+        last_sdc_ts = info.get("last_sdc_timestamp")
+        if last_sdc_ts:
+            # Use latest_end (last log timestamp) as the reference "now" for historical logs
+            elapsed_sdc = latest_end - last_sdc_ts
+            if elapsed_sdc < 0: elapsed_sdc = 0
+            
+            if elapsed_sdc < 60:
+                last_sdc_str = f"{int(elapsed_sdc)}s ago"
+            elif elapsed_sdc < 3600:
+                last_sdc_str = f"{int(elapsed_sdc // 60)}m ago"
+            else:
+                last_sdc_str = f"{int(elapsed_sdc // 3600)}h ago"
+        else:
+            last_sdc_str = "[dim]Never[/dim]"
+
         # Calculate SDC rate
         sdc_count = info.get("sdcs", 0)
         if duration == 0:
@@ -218,7 +254,7 @@ class Dashboard:
             else:
                 rate_str = f"{rate_per_hour:.4f}/hr"
 
-        return duration_str, rate_str, first_ts_str, last_ts_str
+        return duration_str, rate_str, first_ts_str, last_ts_str, last_sdc_str
 
     @staticmethod
     def _parse_log_end_time(path: Path, start_t: float | None) -> float | None:
