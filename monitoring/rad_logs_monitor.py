@@ -10,7 +10,7 @@ class RadLogsMonitor:
         self.logs_path = Path(logs_folder)
         self.lock = Lock()
         self.device_data = {}   # {device_name: {"logs": set(), "sdcs": int, "latest_log": str, "last_update_time": float}}
-        self.model_data = {}    # {(device, model): {"logs": set(), "sdcs": int}}
+        self.model_data = {}    # {model_name: {"logs": set(), "sdcs": int, "last_update_time": float | None}}
         self.file_to_model = {} # {file_path_str: model_name}
         self.file_sizes = {}    # {file_path_str: last_read_size}
         self.latest_lines = []
@@ -72,17 +72,21 @@ class RadLogsMonitor:
                 
                 model_name = extract_model_name(content)
                 self.file_to_model[file_str] = model_name
-                self._update_model_stats(device_name, model_name, log_file.name, sdc_count)
+                mtime = log_file.stat().st_mtime
+                self._update_model_stats(model_name, log_file.name, sdc_count, mtime)
                 return sdc_count
         except Exception:
             return 0
 
-    def _update_model_stats(self, device, model, log_name, sdc_delta):
-        key = (device, model)
-        if key not in self.model_data:
-            self.model_data[key] = {"logs": set(), "sdcs": 0}
-        self.model_data[key]["logs"].add(log_name)
-        self.model_data[key]["sdcs"] += sdc_delta
+    def _update_model_stats(self, model, log_name, sdc_delta, update_time=None):
+        if model not in self.model_data:
+            self.model_data[model] = {"logs": set(), "sdcs": 0, "last_update_time": None}
+        self.model_data[model]["logs"].add(log_name)
+        self.model_data[model]["sdcs"] += sdc_delta
+        if update_time is not None:
+            current_last = self.model_data[model]["last_update_time"]
+            if current_last is None or update_time > current_last:
+                self.model_data[model]["last_update_time"] = update_time
 
     def _handle_log_update(self, file_path):
         device_name = file_path.parent.name
@@ -95,18 +99,26 @@ class RadLogsMonitor:
             new_content, current_size = read_log_delta(file_path, old_size)
             self.file_sizes[file_str] = current_size
 
+            model_name = self._get_or_extract_model(file_str, file_path)
+
             if new_content or old_size == 0:
                 sdc_delta = count_sdcs(new_content)
                 self.device_data[device_name]["sdcs"] += sdc_delta
-                
-                model_name = self._get_or_extract_model(file_str, file_path)
-                self._update_model_stats(device_name, model_name, file_path.name, sdc_delta)
+                self._update_model_stats(model_name, file_path.name, sdc_delta)
             
             try:
-                self.device_data[device_name]["last_update_time"] = file_path.stat().st_mtime
+                mtime = file_path.stat().st_mtime
             except Exception:
                 import time
-                self.device_data[device_name]["last_update_time"] = time.time()
+                mtime = time.time()
+                
+            self.device_data[device_name]["last_update_time"] = mtime
+            
+            if model_name not in self.model_data:
+                self.model_data[model_name] = {"logs": set(), "sdcs": 0, "last_update_time": None}
+            current_last = self.model_data[model_name]["last_update_time"]
+            if current_last is None or mtime > current_last:
+                self.model_data[model_name]["last_update_time"] = mtime
             
             self.latest_lines = read_tail(file_path)
 

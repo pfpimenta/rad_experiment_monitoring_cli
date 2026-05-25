@@ -26,7 +26,7 @@ class Dashboard:
         
         layout["model_summary"].update(
             Panel(Dashboard._create_model_table(model_data), 
-                  title="Model-wise Breakdown", border_style="yellow")
+                  title="Benchmark Logs", border_style="yellow")
         )
 
         layout["tail_pane"].update(
@@ -89,16 +89,26 @@ class Dashboard:
     @staticmethod
     def _create_model_table(model_data):
         table = Table(show_header=True, header_style="bold yellow", expand=True)
-        table.add_column("Device", style="dim white")
         table.add_column("Model Name", style="bold white")
         table.add_column("Logs", justify="right")
         table.add_column("SDCs", justify="right")
+        table.add_column("Last Update", justify="right")
 
-        for (device, model), info in sorted(model_data.items()):
+        current_time = time.time()
+
+        for model, info in sorted(model_data.items()):
             num_logs = len(info["logs"])
             sdc_count = info["sdcs"]
             sdc_style = "bold red" if sdc_count > 0 else "green"
-            table.add_row(device, model, str(num_logs), f"[{sdc_style}]{sdc_count}[/{sdc_style}]")
+            
+            last_update = info.get("last_update_time")
+            if last_update is None:
+                status_str = "[dim]Never[/dim]"
+            else:
+                elapsed = current_time - last_update
+                status_str = Dashboard._format_elapsed_time(elapsed)
+
+            table.add_row(model, str(num_logs), f"[{sdc_style}]{sdc_count}[/{sdc_style}]", status_str)
         
         return table
 
