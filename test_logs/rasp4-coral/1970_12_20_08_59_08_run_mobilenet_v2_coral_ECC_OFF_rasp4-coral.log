@@ -1,8 +1,8 @@
 #SERVER_HEADER --model vit_base_8_edgetpu.tflite -n 32 --vit
-#SERVER_BEGIN Y:2025 M:12 D:20 TIME:13:15:1-643396
-#LOGFILE /var/radiation-benchmarks/log/2024_05_22_13_13_04_TensorFlow-vit_base_8_edgetpu_ECC_OFF_rasp4-coral.log
+#SERVER_BEGIN Y:1970 M:12 D:20 TIME:13:15:1-643396
+#LOGFILE /var/radiation-benchmarks/log/1970_05_22_13_13_04_TensorFlow-vit_base_8_edgetpu_ECC_OFF_rasp4-coral.log
 #HEADER framework:TensorFlow framework_version:2.10.0 Device:EdgeTPUiterations=1000000000000 testsamples=100 generate=False enableconsolelog=False model=/home/carol/tpu-rad/models/vit_base_8_edgetpu.tflite tokens=None input=/home/carol/tpu-rad/inputs/vit_base_8_images.npy golden=/home/carol/tpu-rad/golden/vit_base_8_golden.npy reload=False vit=True log_interval=50
-#BEGIN Y:2024 M:05 D:22 Time:13:13:04
+#BEGIN Y:1970 M:05 D:22 Time:13:13:04
 #INF PERF loaded_object:model load_time:3.2641s
 #INF PERF loaded_object:data load_time:0.2040s
 #INF WARNING n_images:100 golden_outputs:32
@@ -259,4 +259,4 @@
 #ERR index:42 e:0.83984375 r:0.80859375
 #ERR index:59 e:0.01171875 r:0.0078125
 #ERR index:96 e:0.11328125 r:0.15234375
-#SERVER_DUE:soft APP reboot TIME:2025-12-20-13-31-45
+#SERVER_DUE:soft APP reboot TIME:1970-12-20-13-31-45
