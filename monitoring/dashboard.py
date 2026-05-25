@@ -41,7 +41,7 @@ class Dashboard:
         table = Table(show_header=True, header_style="bold cyan", expand=True)
         table.add_column("Device Name", style="bold white")
         table.add_column("Log Files", justify="right")
-        table.add_column("SDCs Found", justify="right")
+        table.add_column("SDCs", justify="right")
         table.add_column("Last Update", justify="right")
 
         total_logs = 0
@@ -90,7 +90,7 @@ class Dashboard:
     def _create_model_table(model_data):
         table = Table(show_header=True, header_style="bold yellow", expand=True)
         table.add_column("Model Name", style="bold white")
-        table.add_column("Logs", justify="right")
+        table.add_column("Log Files", justify="right")
         table.add_column("SDCs", justify="right")
         table.add_column("Last Update", justify="right")
 
