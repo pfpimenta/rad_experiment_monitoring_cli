@@ -16,6 +16,7 @@ class RadLogsMonitor:
         self.file_sizes = {}    # {file_path_str: last_read_size}
         self.latest_lines = []
         self.pending_files = set()
+        self.global_latest_timestamp = None
 
     def queue_update(self, file_path):
         """Thread-safe queuing of file updates."""
@@ -87,6 +88,14 @@ class RadLogsMonitor:
                 
                 mtime = log_file.stat().st_mtime
                 self._update_model_stats(model_name, log_file, sdc_count, mtime, last_sdc_ts)
+                
+                # Update global latest timestamp based on the end of this log
+                from .dashboard import Dashboard # Avoid circular import if possible, but Dashboard is already imported in monitor.py
+                log_end_ts = Dashboard._parse_log_end_time(log_file, start_ts)
+                if log_end_ts:
+                    if self.global_latest_timestamp is None or log_end_ts > self.global_latest_timestamp:
+                        self.global_latest_timestamp = log_end_ts
+
                 return sdc_count, last_sdc_ts
         except Exception:
             return 0, None
@@ -140,6 +149,13 @@ class RadLogsMonitor:
                         self.device_data[device_name]["last_sdc_timestamp"] = last_sdc_ts
 
                 self._update_model_stats(model_name, file_path, sdc_delta, update_time=None, sdc_timestamp=last_sdc_ts)
+
+                # Update global latest timestamp
+                from .dashboard import Dashboard
+                log_end_ts = Dashboard._parse_log_end_time(file_path, start_ts)
+                if log_end_ts:
+                    if self.global_latest_timestamp is None or log_end_ts > self.global_latest_timestamp:
+                        self.global_latest_timestamp = log_end_ts
             
             try:
                 mtime = file_path.stat().st_mtime

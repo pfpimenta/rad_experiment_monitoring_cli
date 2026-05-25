@@ -39,11 +39,11 @@ def run_monitor(args):
     observer.start()
 
     try:
-        with Live(Dashboard.generate(monitor.device_data, monitor.model_data, monitor.latest_lines), 
+        with Live(Dashboard.generate(monitor.device_data, monitor.model_data, monitor.latest_lines, monitor.global_latest_timestamp), 
                   screen=True, auto_refresh=True, refresh_per_second=4) as live:
             while True:
                 monitor.process_updates()
-                live.update(Dashboard.generate(monitor.device_data, monitor.model_data, monitor.latest_lines))
+                live.update(Dashboard.generate(monitor.device_data, monitor.model_data, monitor.latest_lines, monitor.global_latest_timestamp))
                 time.sleep(args.cooldown)
     except KeyboardInterrupt:
         pass

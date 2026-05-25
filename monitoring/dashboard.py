@@ -10,7 +10,7 @@ class Dashboard:
     """Handles the visual representation of the monitoring data."""
     
     @staticmethod
-    def generate(device_data, model_data, latest_lines) -> Layout:
+    def generate(device_data, model_data, latest_lines, global_latest_ts=None) -> Layout:
         layout = Layout()
         layout.split_column(
             Layout(name="upper_pane", ratio=3),
@@ -23,12 +23,12 @@ class Dashboard:
         )
 
         layout["device_summary"].update(
-            Panel(Dashboard._create_device_table(device_data), 
+            Panel(Dashboard._create_device_table(device_data, global_latest_ts), 
                   title="Device Overview", border_style="blue")
         )
         
         layout["model_summary"].update(
-            Panel(Dashboard._create_model_table(model_data), 
+            Panel(Dashboard._create_model_table(model_data, global_latest_ts), 
                   title="Benchmark Logs", border_style="yellow")
         )
 
@@ -40,7 +40,7 @@ class Dashboard:
         return layout
 
     @staticmethod
-    def _create_device_table(device_data):
+    def _create_device_table(device_data, global_latest_ts=None):
         table = Table(show_header=True, header_style="bold cyan", expand=True)
         table.add_column("Device Name", style="bold white")
         table.add_column("Log Files", justify="right")
@@ -60,18 +60,10 @@ class Dashboard:
             sdc_style = "bold red" if sdc_count > 0 else "green"
             
             last_sdc_ts = info.get("last_sdc_timestamp")
-            if last_sdc_ts:
-                # For Device Overview, we use system time for "Last SDC" if it's recent, 
-                # but Device Overview is generally about the monitor's state.
-                # However, to be consistent with 1970 logs if that's what we are monitoring:
-                # If last_sdc_ts is in 1970, we can't use current_time.
-                # Let's use the same logic as Last Update if it's recent, 
-                # or N/A if it's old.
-                if current_time - last_sdc_ts < 86400 * 365: # Within a year
-                    elapsed_sdc = current_time - last_sdc_ts
-                    last_sdc_str = Dashboard._format_elapsed_time(elapsed_sdc)
-                else:
-                    last_sdc_str = "[dim]Long ago[/dim]"
+            if last_sdc_ts and global_latest_ts:
+                elapsed_sdc = global_latest_ts - last_sdc_ts
+                if elapsed_sdc < 0: elapsed_sdc = 0
+                last_sdc_str = Dashboard._format_elapsed_time(elapsed_sdc, reverse=True)
             else:
                 last_sdc_str = "[dim]Never[/dim]"
 
@@ -89,25 +81,29 @@ class Dashboard:
         return table
 
     @staticmethod
-    def _format_elapsed_time(elapsed: float) -> str:
+    def _format_elapsed_time(elapsed: float, reverse: bool = False) -> str:
         if elapsed < 0:
             elapsed = 0
         
         if elapsed < 10:
-            return f"[bold green]Just now ({int(elapsed)}s)[/bold green]"
+            color = "bold red" if reverse else "bold green"
+            msg = f"Just now ({int(elapsed)}s)"
+            return f"[{color}]{msg}[/{color}]"
         elif elapsed < 60:
-            return f"[green]{int(elapsed)}s ago[/green]"
+            color = "red" if reverse else "green"
+            return f"[{color}]{int(elapsed)}s ago[/{color}]"
         elif elapsed < 3600:
             minutes = int(elapsed // 60)
             seconds = int(elapsed % 60)
             return f"[yellow]{minutes}m {seconds}s ago[/yellow]"
         else:
+            color = "green" if reverse else "bold red"
             hours = int(elapsed // 3600)
             minutes = int((elapsed % 3600) // 60)
-            return f"[bold red]{hours}h {minutes}m ago[/bold red]"
+            return f"[{color}]{hours}h {minutes}m ago[/{color}]"
 
     @staticmethod
-    def _create_model_table(model_data):
+    def _create_model_table(model_data, global_latest_ts=None):
         table = Table(show_header=True, header_style="bold yellow", expand=True)
         table.add_column("Model Name", style="bold white")
         table.add_column("Logs", justify="right")
@@ -133,7 +129,7 @@ class Dashboard:
                 elapsed = current_time - last_update
                 status_str = Dashboard._format_elapsed_time(elapsed)
 
-            duration_str, rate_str, first_ts, last_ts, last_sdc_str = Dashboard._calculate_model_metrics(info)
+            duration_str, rate_str, first_ts, last_ts, last_sdc_str = Dashboard._calculate_model_metrics(info, global_latest_ts)
 
             table.add_row(
                 model, 
@@ -168,7 +164,7 @@ class Dashboard:
         return None
 
     @staticmethod
-    def _calculate_model_metrics(info):
+    def _calculate_model_metrics(info, global_latest_ts=None):
         """Calculates running duration and SDC rate for a model.
         
         Returns:
@@ -224,17 +220,11 @@ class Dashboard:
 
         # Calculate Last SDC
         last_sdc_ts = info.get("last_sdc_timestamp")
-        if last_sdc_ts:
-            # Use latest_end (last log timestamp) as the reference "now" for historical logs
-            elapsed_sdc = latest_end - last_sdc_ts
+        if last_sdc_ts and global_latest_ts:
+            # Use global_latest_ts as the reference "now"
+            elapsed_sdc = global_latest_ts - last_sdc_ts
             if elapsed_sdc < 0: elapsed_sdc = 0
-            
-            if elapsed_sdc < 60:
-                last_sdc_str = f"{int(elapsed_sdc)}s ago"
-            elif elapsed_sdc < 3600:
-                last_sdc_str = f"{int(elapsed_sdc // 60)}m ago"
-            else:
-                last_sdc_str = f"{int(elapsed_sdc // 3600)}h ago"
+            last_sdc_str = Dashboard._format_elapsed_time(elapsed_sdc, reverse=True)
         else:
             last_sdc_str = "[dim]Never[/dim]"
 
