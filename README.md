@@ -26,8 +26,8 @@ python3 monitor.py --logs-folder test_logs/
 ```text
 logs/
 ├── rasp4-coral
-│   ├── 2025_12_20_08_59_08_run_mobilenet_v2_coral_ECC_OFF_rasp4-coral.log
-│   ├── 2025_12_20_13_52_00_run_base_vit_8_ECC_OFF_rasp4-coral.log
+│   ├── 1970_12_20_08_59_08_run_mobilenet_v2_coral_ECC_OFF_rasp4-coral.log
+│   ├── 1970_12_20_13_52_00_run_base_vit_8_ECC_OFF_rasp4-coral.log
 │   └── ...
 ├── other_device
 │   └── ...
@@ -38,3 +38,4 @@ logs/
 ### TODOs
 * Automated Testing: Add a tests/ directory with unit tests for the regex extraction and integration tests using pytest to simulate log file updates.
 * Installation: Add a setup.py or pyproject.toml to allow installing the tool via pip install ., making the monitor.py command available globally as a CLI entry point.
+* Show time since last SDC, per benchmark
