@@ -17,6 +17,11 @@ dependencies = [
     "watchdog>=6.0.0",
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest>=9.0.0",
+]
+
 [project.scripts]
 rad-monitor = "monitor:main"
 

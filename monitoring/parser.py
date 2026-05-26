@@ -5,7 +5,7 @@ import datetime
 
 def extract_model_name(content: str) -> str:
     """Extracts the model filename from the #HEADER line."""
-    match = re.search(r'#HEADER.*model=([^ ]+)', content)
+    match = re.search(r'#HEADER.*model=([^ \n\r]+)', content)
     if match:
         model_path = match.group(1)
         return os.path.basename(model_path)
@@ -49,10 +49,10 @@ def find_last_sdc_timestamp(content: str, start_ts: float | None) -> float | Non
         if "SDC" in lines[i].upper():
             # Found SDC, now look for the nearest AccTime BEFORE it
             for j in range(i, -1, -1):
-                match = re.search(r'AccTime:([\d.]+)', lines[j])
+                match = re.search(r'AccTime:\s*([\d.]+)', lines[j])
                 if match:
                     acc_time = float(match.group(1))
-                    if start_ts:
+                    if start_ts is not None:
                         return start_ts + acc_time
                     return None # Cannot calculate absolute without start_ts
     return None

@@ -39,6 +39,17 @@ Example:
 rad-monitor --logs-folder test_logs/
 ```
 
+### Testing
+
+You can run the tests using `pytest`:
+
+```bash
+pip install ".[test]"
+pytest
+```
+
+This will run both unit tests for the parser and integration tests for the monitoring pipeline.
+
 ### Expected log sctructure
 
 ```text
@@ -54,4 +65,4 @@ logs/
 ```
 
 ### TODOs
-* Automated Testing: Add a tests/ directory with unit tests for the regex extraction and integration tests using pytest to simulate log file updates.
+* Update at least one of the logs in test_logs to have the new format (with the timestamp on the beggining of each line).
