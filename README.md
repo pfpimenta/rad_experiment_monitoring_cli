@@ -3,10 +3,28 @@ Terminal tool to monitor radiation experiments (throwing radiation at computing 
 
 The monitoring dashboard provides:
 1. **Device Overview**: Summary of logs and total SDCs per device folder.
-2. **Model-wise Breakdown**: Detailed breakdown of logs and SDCs per model (extracted from log headers).
-3. **Live Tail**: Real-time view of the most recent log activity with highlighted SDC events.
+2. **Benchmark Logs**: Detailed breakdown of logs and SDCs per benchmark.
+3. **Live Active Log Output**: Real-time view of the most recent log activity with highlighted SDC events.
+
+### Installation
+
+You can install the tool globally (or in a virtual environment) using:
+
+```bash
+pip install .
+```
+
+This will make the `rad-monitor` command available in your terminal.
 
 ### Usage
+
+After installation, you can run the monitor using:
+
+```bash
+rad-monitor --logs-folder LOGS_FOLDERPATH [--cooldown SECONDS]
+```
+
+Or run it directly with python:
 
 ```bash
 python3 monitor.py --logs-folder LOGS_FOLDERPATH [--cooldown SECONDS]
@@ -15,10 +33,10 @@ python3 monitor.py --logs-folder LOGS_FOLDERPATH [--cooldown SECONDS]
 *   `--logs-folder`: Path to the root logs directory.
 *   `--cooldown`: (Optional) Cool down period between processing log updates in seconds. Defaults to `1.0`.
 
-Example (run this to test the repo):
+Example:
 
 ```bash
-python3 monitor.py --logs-folder test_logs/
+rad-monitor --logs-folder test_logs/
 ```
 
 ### Expected log sctructure
@@ -37,5 +55,3 @@ logs/
 
 ### TODOs
 * Automated Testing: Add a tests/ directory with unit tests for the regex extraction and integration tests using pytest to simulate log file updates.
-* Installation: Add a setup.py or pyproject.toml to allow installing the tool via pip install ., making the monitor.py command available globally as a CLI entry point.
-* Show time since last SDC, per benchmark
